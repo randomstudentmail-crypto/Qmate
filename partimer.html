@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qmate — Part-timer Dashboard</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="shortcut icon" href="favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#FAFAF7; --bg2:#F3F3EE; --white:#FFFFFF;
+  --ink:#111110; --ink2:#3A3A38; --muted:#8C8C86; --line:#E4E4DE;
+  --accent:#FF5C35; --acc2:#FF8A6A; --accbg:#FFF1EE;
+  --green:#1A9E6E; --gbg:#EDFAF4; --gline:rgba(26,158,110,0.2);
+  --red:#D93025; --rbg:#FEF2F2; --rline:rgba(217,48,37,0.2);
+  --amber:#B45309; --abg:#FFFBEB; --aline:rgba(180,83,9,0.2);
+  --fh:'Playfair Display',serif; --fb:'Figtree',sans-serif;
+  --sh:0 1px 3px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04);
+  --sh2:0 4px 16px rgba(0,0,0,0.08);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--ink);font-family:var(--fb);min-height:100vh;}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(250,250,247,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);height:58px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;}
+.logo{font-family:var(--fh);font-size:1.3rem;font-weight:700;color:var(--ink);letter-spacing:-0.02em;}
+.logo span{color:var(--green);}
+.nav-r{display:flex;align-items:center;gap:0.8rem;}
+.user-pill{display:flex;align-items:center;gap:0.5rem;background:var(--white);border:1px solid var(--line);border-radius:100px;padding:0.25rem 0.8rem 0.25rem 0.25rem;font-size:0.78rem;color:var(--ink2);box-shadow:var(--sh);}
+.uav{width:26px;height:26px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;}
+.btn-out{background:none;border:1px solid var(--line);border-radius:8px;padding:0.28rem 0.75rem;font-family:var(--fb);font-size:0.75rem;color:var(--muted);cursor:pointer;transition:all 0.2s;}
+.btn-out:hover{border-color:var(--red);color:var(--red);}
+
+/* LAYOUT */
+.layout{max-width:1200px;margin:0 auto;padding:2rem 1.5rem;display:grid;grid-template-columns:265px 1fr;gap:1.5rem;}
+@media(max-width:900px){.layout{grid-template-columns:1fr;}}
+
+/* ── SIDEBAR ─────────────────────────────────────────────── */
+.sidebar{display:flex;flex-direction:column;gap:1rem;}
+
+.profile-card{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:1.4rem;box-shadow:var(--sh);}
+.pro-head{display:flex;align-items:center;gap:0.9rem;margin-bottom:1.1rem;}
+.pro-av{width:52px;height:52px;border-radius:13px;background:var(--green);display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-size:1.2rem;font-weight:700;color:#fff;position:relative;flex-shrink:0;}
+.online-ring{position:absolute;bottom:-2px;right:-2px;width:13px;height:13px;background:var(--green);border-radius:50%;border:2px solid var(--white);box-shadow:0 0 0 2px rgba(26,158,110,0.25);}
+.pro-name{font-family:var(--fh);font-size:0.95rem;font-weight:700;color:var(--ink);}
+.pro-role{font-size:0.72rem;color:var(--muted);font-weight:300;}
+
+.pro-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:1rem;}
+.ps{background:var(--bg2);border-radius:9px;padding:0.55rem 0.4rem;text-align:center;}
+.ps-v{font-family:var(--fh);font-size:0.9rem;font-weight:700;color:var(--ink);}
+.ps-l{font-size:0.6rem;color:var(--muted);margin-top:0.07rem;}
+
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:0.7rem 0;border-top:1px solid var(--line);}
+.tr-info strong{font-size:0.8rem;font-weight:600;color:var(--ink2);display:block;}
+.tr-info small{font-size:0.68rem;color:var(--muted);}
+.tog{width:38px;height:20px;background:var(--line);border-radius:100px;position:relative;cursor:pointer;transition:background 0.25s;flex-shrink:0;}
+.tog.on{background:var(--green);}
+.tog::after{content:'';position:absolute;left:2px;top:2px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform 0.25s;box-shadow:0 1px 3px rgba(0,0,0,0.15);}
+.tog.on::after{transform:translateX(18px);}
+
+.earn-card{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:1.2rem;box-shadow:var(--sh);}
+.el{font-size:0.65rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem;}
+.ev{font-family:var(--fh);font-size:1.8rem;font-weight:700;color:var(--green);letter-spacing:-0.02em;}
+.es{font-size:0.72rem;color:var(--muted);font-weight:300;margin-top:0.2rem;}
+.ebar{height:3px;background:var(--line);border-radius:100px;margin-top:1rem;overflow:hidden;}
+.efill{height:100%;background:var(--green);border-radius:100px;width:0%;transition:width 1.2s ease;}
+
+.hist-card{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:1.2rem;box-shadow:var(--sh);}
+.hist-title{font-size:0.7rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:0.85rem;}
+.hi{display:flex;align-items:center;justify-content:space-between;gap:0.7rem;padding:0.65rem 0;border-bottom:1px solid var(--line);}
+.hi:last-child{border-bottom:none;padding-bottom:0;}
+.hi-left{display:flex;align-items:center;gap:0.6rem;}
+.hi-ic{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;flex-shrink:0;}
+.hi-done{background:var(--gbg);} .hi-miss{background:var(--rbg);}
+.hi-nm{font-size:0.78rem;font-weight:500;color:var(--ink2);}
+.hi-lc{font-size:0.65rem;color:var(--muted);}
+.hi-pay{font-family:var(--fh);font-size:0.85rem;font-weight:700;color:var(--green);}
+
+/* ── MAIN ────────────────────────────────────────────────── */
+.main{display:flex;flex-direction:column;gap:1.2rem;}
+
+/* PAGE TITLE */
+.page-hd{margin-bottom:0.4rem;}
+.page-hd h1{font-family:var(--fh);font-size:clamp(1.5rem,2.2vw,2rem);font-weight:700;letter-spacing:-0.02em;color:var(--ink);margin-bottom:0.2rem;}
+.page-hd h1 em{font-style:italic;color:var(--green);}
+.page-hd p{font-size:0.85rem;color:var(--muted);font-weight:300;}
+
+/* ACTIVE JOB */
+.active-job{background:var(--gbg);border:1px solid var(--gline);border-radius:16px;padding:1.3rem;display:none;}
+.active-job.show{display:block;}
+.aj-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.9rem;}
+.aj-title{font-family:var(--fh);font-size:0.95rem;font-weight:700;color:var(--ink);}
+.live-pill{display:flex;align-items:center;gap:0.35rem;background:var(--white);border:1px solid var(--gline);border-radius:100px;padding:0.2rem 0.65rem;font-size:0.65rem;font-weight:700;color:var(--green);letter-spacing:0.06em;}
+.blink{animation:blnk 1.5s infinite;}
+@keyframes blnk{0%,100%{opacity:1}50%{opacity:0.3}}
+.prog{margin-bottom:0.9rem;}
+.prog-lbl{display:flex;justify-content:space-between;font-size:0.7rem;color:var(--muted);margin-bottom:0.32rem;}
+.prog-bar{height:3px;background:var(--white);border-radius:100px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--green);border-radius:100px;width:40%;}
+.aj-meta{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.7rem;margin-bottom:1rem;}
+@media(max-width:500px){.aj-meta{grid-template-columns:1fr 1fr;}}
+.ajm{background:var(--white);border-radius:10px;padding:0.65rem;border:1px solid var(--gline);}
+.ajm-l{font-size:0.6rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:0.12rem;}
+.ajm-v{font-family:var(--fh);font-size:0.88rem;font-weight:700;color:var(--ink);}
+.btn-done{width:100%;background:var(--green);border:none;border-radius:100px;padding:0.65rem;color:#fff;font-family:var(--fb);font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.btn-done:hover{background:#158a5e;box-shadow:0 4px 14px rgba(26,158,110,0.25);}
+
+/* INBOX */
+.inbox-head{display:flex;align-items:center;gap:0.6rem;margin-bottom:0.9rem;}
+.in-title{font-family:var(--fh);font-size:0.95rem;font-weight:700;color:var(--ink);}
+.ibadge{background:var(--accent);color:#fff;border-radius:100px;padding:0.06rem 0.52rem;font-size:0.65rem;font-weight:700;}
+
+.req-card{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:1.2rem;margin-bottom:0.9rem;box-shadow:var(--sh);animation:slideR 0.32s ease both;}
+@keyframes slideR{from{opacity:0;transform:translateX(-10px);}to{opacity:1;transform:translateX(0);}}
+.req-card.urgent{border-color:var(--aline);background:var(--abg);}
+.urgent-flag{font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--amber);margin-bottom:0.7rem;display:flex;align-items:center;gap:0.4rem;}
+
+.rt{display:flex;align-items:flex-start;justify-content:space-between;gap:0.8rem;margin-bottom:0.9rem;}
+.rc{display:flex;align-items:center;gap:0.7rem;}
+.c-av{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-size:0.85rem;font-weight:700;color:#fff;flex-shrink:0;}
+.c-nm{font-size:0.87rem;font-weight:600;color:var(--ink2);}
+.c-mt{font-size:0.7rem;color:var(--muted);font-weight:300;}
+.r-time{font-size:0.67rem;color:var(--muted);flex-shrink:0;text-align:right;}
+
+.rdet{background:var(--bg2);border-radius:10px;padding:0.85rem;margin-bottom:0.9rem;display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;}
+@media(max-width:500px){.rdet{grid-template-columns:1fr;}}
+.dl{font-size:0.6rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);}
+.dv{font-size:0.82rem;font-weight:500;color:var(--ink2);margin-top:0.1rem;}
+.dv.loc{color:var(--accent);}
+.dv.pay{color:var(--green);font-family:var(--fh);font-weight:700;}
+
+.r-note{font-size:0.77rem;color:var(--muted);font-style:italic;margin-bottom:0.9rem;padding-left:0.7rem;border-left:2px solid var(--line);}
+.r-actions{display:flex;gap:0.6rem;}
+.btn-dec{background:var(--white);border:1px solid var(--rline);border-radius:100px;padding:0.52rem 1.1rem;color:var(--red);font-family:var(--fb);font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.btn-dec:hover{background:var(--rbg);border-color:var(--red);}
+.btn-acc{flex:1;background:var(--green);border:none;border-radius:100px;padding:0.55rem;color:#fff;font-family:var(--fb);font-size:0.82rem;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:0.35rem;}
+.btn-acc:hover{background:#158a5e;box-shadow:0 3px 12px rgba(26,158,110,0.22);}
+.r-status{font-size:0.78rem;font-weight:600;padding:0.35rem 0;}
+.r-status.a{color:var(--green);}
+.r-status.d{color:var(--red);}
+.empty-r{text-align:center;padding:2.5rem;color:var(--muted);}
+.ei{font-size:2rem;margin-bottom:0.65rem;}
+.empty-r p{font-size:0.83rem;font-weight:300;}
+
+/* RING OVERLAY */
+.ring-ov{position:fixed;inset:0;z-index:400;background:rgba(17,17,16,0.5);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.25s;}
+.ring-ov.show{opacity:1;pointer-events:all;}
+.ring-card{background:var(--white);border:1px solid var(--line);border-radius:24px;padding:2rem;max-width:340px;width:90%;text-align:center;transform:scale(0.94);transition:transform 0.3s cubic-bezier(0.34,1.3,0.64,1);box-shadow:0 24px 60px rgba(0,0,0,0.15);}
+.ring-ov.show .ring-card{transform:scale(1);}
+.ring-ic{width:68px;height:68px;border-radius:50%;background:var(--gbg);border:2px solid var(--gline);margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;font-size:1.6rem;animation:rp 1.4s infinite;}
+@keyframes rp{0%,100%{box-shadow:0 0 0 0 rgba(26,158,110,0.25);}50%{box-shadow:0 0 0 18px transparent;}}
+.ring-lbl{font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:0.4rem;}
+.ring-nm{font-family:var(--fh);font-size:1.2rem;font-weight:700;color:var(--ink);margin-bottom:0.3rem;}
+.ring-loc{font-size:0.82rem;color:var(--muted);margin-bottom:0.3rem;}
+.ring-pay{font-family:var(--fh);font-size:1.4rem;font-weight:700;color:var(--green);margin-bottom:1.4rem;}
+.ring-acts{display:flex;gap:0.7rem;}
+.btn-rno{flex:1;background:var(--white);border:1px solid var(--rline);border-radius:100px;padding:0.8rem;color:var(--red);font-family:var(--fb);font-weight:600;cursor:pointer;transition:all 0.2s;}
+.btn-rno:hover{background:var(--rbg);}
+.btn-ryes{flex:2;background:var(--green);border:none;border-radius:100px;padding:0.8rem;color:#fff;font-family:var(--fb);font-weight:700;cursor:pointer;transition:all 0.2s;}
+.btn-ryes:hover{background:#158a5e;box-shadow:0 4px 16px rgba(26,158,110,0.28);}
+
+/* TOAST */
+.toast{position:fixed;top:4.5rem;right:1.5rem;z-index:300;background:var(--white);border-radius:13px;padding:0.85rem 1.1rem;display:flex;align-items:center;gap:0.7rem;transform:translateX(110%);opacity:0;transition:all 0.38s cubic-bezier(0.34,1.3,0.64,1);max-width:300px;box-shadow:0 8px 28px rgba(0,0,0,0.1);}
+.toast.show{transform:translateX(0);opacity:1;}
+.toast.g{border-left:3px solid var(--green);}
+.toast.r{border-left:3px solid var(--red);}
+.toast.o{border-left:3px solid var(--accent);}
+.tt{font-weight:600;font-size:0.8rem;color:var(--ink2);margin-bottom:0.08rem;}
+.ts{font-size:0.71rem;color:var(--muted);}
+
+/* ── SITE FOOTER ── easter egg: invisible until hovered ─────── */
+.site-footer{width:100%;padding:.95rem 2rem;background:var(--bg);border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;}
+.ft-brand{font-family:var(--fh);font-size:.75rem;font-weight:500;color:var(--line);letter-spacing:.02em;transition:color .4s;}
+.ft-credits{font-size:.67rem;color:var(--line);font-weight:300;letter-spacing:.03em;text-align:right;transition:color .4s;}
+.ft-credits em{font-style:normal;color:var(--bg2);transition:color .4s;}
+.site-footer:hover .ft-brand,.site-footer:hover .ft-credits{color:var(--muted);}
+.site-footer:hover .ft-credits em{color:var(--ink2);}
+@media(max-width:480px){.site-footer{flex-direction:column;align-items:flex-start;padding:.85rem 1.1rem;}.ft-credits{text-align:left;}}
+
+/* ── RESPONSIVE PARTIMER ────────────────────────────────────── */
+@media(max-width:960px){
+  .layout{grid-template-columns:1fr;padding:1.2rem 1rem;}
+  nav{padding:0 1rem;}
+  .sidebar{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+  .hist-card{grid-column:1/-1;}
+}
+@media(max-width:640px){
+  .sidebar{grid-template-columns:1fr;}
+  .pro-stats{grid-template-columns:repeat(3,1fr);}
+  .aj-meta{grid-template-columns:1fr 1fr;}
+  .rdet{grid-template-columns:1fr 1fr;}
+  .ring-card{padding:1.5rem 1.2rem;}
+}
+@media(max-width:420px){
+  nav{height:52px;}
+  .btn-out{padding:.22rem .55rem;font-size:.7rem;}
+  .layout{padding:1rem .85rem;}
+  .r-actions{flex-direction:column;}
+  .btn-dec{width:100%;text-align:center;}
+  .btn-acc{width:100%;}
+  .ring-acts{flex-direction:column;}
+  .btn-rno,.btn-ryes{flex:unset;width:100%;}
+}
+
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Q<span>.</span>mate</div>
+  <div class="nav-r">
+    <div class="user-pill"><div class="uav" id="navAv">?</div><span id="navName">…</span></div>
+    <button class="btn-out" onclick="logout()">Sign out</button>
+  </div>
+</nav>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <div class="profile-card">
+      <div class="pro-head">
+        <div class="pro-av" id="proAv">?<div class="online-ring" id="onRing" style="display:none;"></div></div>
+        <div><div class="pro-name" id="proNm">Loading…</div><div class="pro-role" id="proRl">Queue Specialist</div></div>
+      </div>
+      <div class="pro-stats">
+        <div class="ps"><div class="ps-v" id="sJobs">0</div><div class="ps-l">Jobs done</div></div>
+        <div class="ps"><div class="ps-v" id="sRat">★5.0</div><div class="ps-l">Rating</div></div>
+        <div class="ps"><div class="ps-v" id="sRate">₹80</div><div class="ps-l">Per hour</div></div>
+      </div>
+      <div class="toggle-row">
+        <div class="tr-info"><strong>Available for jobs</strong><small id="availSub">You are offline</small></div>
+        <div class="tog" id="availTog" onclick="toggleAvail()"></div>
+      </div>
+      <div class="toggle-row">
+        <div class="tr-info"><strong>Share live location</strong><small>GPS tracking on</small></div>
+        <div class="tog on" id="locTog" onclick="toggleLoc()"></div>
+      </div>
+    </div>
+
+    <div class="earn-card">
+      <div class="el">Today's earnings</div>
+      <div class="ev" id="earnV">₹0</div>
+      <div class="es" id="earnS">Goal: ₹500 · 0% reached</div>
+      <div class="ebar"><div class="efill" id="earnF"></div></div>
+    </div>
+
+    <div class="hist-card">
+      <div class="hist-title">Recent jobs</div>
+      <div id="histList"><div style="font-size:0.78rem;color:var(--muted);font-weight:300;">No jobs yet. Start accepting requests!</div></div>
+    </div>
+
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <div class="page-hd">
+      <h1>Your <em>dashboard</em></h1>
+      <p>Manage requests, track earnings, and control your availability.</p>
+    </div>
+
+    <!-- ACTIVE JOB -->
+    <div class="active-job" id="activeJob">
+      <div class="aj-head">
+        <div class="aj-title" id="ajTitle">Active job</div>
+        <div class="live-pill"><span class="blink">●</span> Live</div>
+      </div>
+      <div class="prog">
+        <div class="prog-lbl"><span>Queue progress</span><span>In progress</span></div>
+        <div class="prog-bar"><div class="prog-fill"></div></div>
+      </div>
+      <div class="aj-meta">
+        <div class="ajm"><div class="ajm-l">Customer</div><div class="ajm-v" id="ajCust">—</div></div>
+        <div class="ajm"><div class="ajm-l">Duration</div><div class="ajm-v" id="ajDur">—</div></div>
+        <div class="ajm"><div class="ajm-l">Your pay</div><div class="ajm-v" id="ajPay" style="color:var(--green)">—</div></div>
+      </div>
+      <button class="btn-done" onclick="markDone()">✓ Mark as completed</button>
+    </div>
+
+    <!-- INBOX -->
+    <div>
+      <div class="inbox-head">
+        <span class="in-title">Incoming requests</span>
+        <span class="ibadge" id="ibadge">0</span>
+      </div>
+      <div id="reqList"><div class="empty-r"><div class="ei">📭</div><p>No requests yet. Turn on availability to receive jobs.</p></div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- RING OVERLAY -->
+<div class="ring-ov" id="ringOv">
+  <div class="ring-card">
+    <div class="ring-ic">📲</div>
+    <div class="ring-lbl">New job request</div>
+    <div class="ring-nm" id="rNm">Customer</div>
+    <div class="ring-loc" id="rLoc">📍 Location</div>
+    <div class="ring-pay" id="rPay">₹0</div>
+    <div class="ring-acts">
+      <button class="btn-rno" onclick="respondRing('declined')">Decline</button>
+      <button class="btn-ryes" onclick="respondRing('accepted')">Accept job →</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span id="tic" style="font-size:1.1rem"></span><div><div class="tt" id="tit"></div><div class="ts" id="tsu"></div></div></div>
+
+<script type="module">
+
+  // ═══════════════════════════════════════════════════════════════
+  //  PASTE YOUR FIREBASE CONFIG HERE
+  //  Get it from: Firebase Console → Project Settings → Your Apps
+  //  Just replace everything inside the curly braces { } below
+  // ═══════════════════════════════════════════════════════════════
+  const firebaseConfig = {
+    apiKey:            "AIzaSyBxsq0jHQTH1NLiq4MAQTpFNVmApFV7CDA",
+    authDomain:        "qmateapp1.firebaseapp.com",
+    projectId:         "qmateapp1",
+    storageBucket:     "qmateapp1.firebasestorage.app",
+    messagingSenderId: "570175715270",
+    appId:             "1:570175715270:web:1699237f00357f32b1a4c7"
+  };
+  // ═══════════════════════════════════════════════════════════════
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, query, where, onSnapshot, doc, getDoc, getDocs, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+const app=initializeApp(firebaseConfig), auth=getAuth(app), db=getFirestore(app);
+let me=null,meData=null,activeJobId=null,ringReqId=null,locOn=true;
+const COLORS=['#FF5C35','#5C6BC0','#26A69A','#EC407A','#7E57C2','#42A5F5'];
+const ini=n=>(n||'U').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+
+onAuthStateChanged(auth,async u=>{
+  if(!u){window.location.href='login.html';return;}
+  me=u;
+  const snap=await getDoc(doc(db,'users',u.uid));
+  if(!snap.exists()){window.location.href='login.html';return;}
+  meData=snap.data();
+  if(meData.role!=='partimer'){window.location.href='customer.html';return;}
+
+  const I=ini(meData.name);
+  document.getElementById('navAv').textContent=I;
+  document.getElementById('navName').textContent=meData.name||'Part-timer';
+  // Set avatar text safely
+  const proAvEl=document.getElementById('proAv');
+  if(proAvEl.childNodes[0]?.nodeType===3) proAvEl.childNodes[0].nodeValue=I;
+  else proAvEl.prepend(document.createTextNode(I));
+
+  document.getElementById('proNm').textContent=meData.name||'Part-timer';
+  document.getElementById('proRl').textContent=(meData.specialty||'Queue Specialist')+' · Qmate';
+  document.getElementById('sJobs').textContent=meData.jobsDone||0;
+  document.getElementById('sRat').textContent='★'+(meData.rating||5.0);
+  document.getElementById('sRate').textContent='₹'+(meData.rate||80);
+
+  if(meData.available){
+    document.getElementById('availTog').classList.add('on');
+    document.getElementById('onRing').style.display='block';
+    document.getElementById('availSub').textContent='Accepting requests';
+  }
+  updateEarnings();
+  listenPending();
+  listenActive();
+  loadHistory();
+  startGPS();
+});
+
+function listenPending(){
+  const q=query(collection(db,'requests'),where('partimerId','==',me.uid),where('status','==','pending'));
+  onSnapshot(q,snap=>{
+    const reqs=[]; snap.forEach(d=>reqs.push({id:d.id,...d.data()}));
+    document.getElementById('ibadge').textContent=reqs.length;
+    renderReqs(reqs);
+    if(reqs.length&&!ringReqId){ringReqId=reqs[0].id;showRing(reqs[0]);}
+  });
+}
+
+function listenActive(){
+  const q=query(collection(db,'requests'),where('partimerId','==',me.uid),where('status','==','accepted'));
+  onSnapshot(q,snap=>{
+    if(snap.empty){document.getElementById('activeJob').classList.remove('show');activeJobId=null;return;}
+    const j={id:snap.docs[0].id,...snap.docs[0].data()};
+    activeJobId=j.id;
+    document.getElementById('activeJob').classList.add('show');
+    document.getElementById('ajTitle').textContent='📍 '+(j.place||'Active job');
+    document.getElementById('ajCust').textContent=j.customerName||'Customer';
+    document.getElementById('ajDur').textContent=j.duration||'—';
+    document.getElementById('ajPay').textContent='₹'+(meData?.rate||80);
+  });
+}
+
+async function loadHistory(){
+  try{
+    const snap=await getDocs(query(collection(db,'requests'),where('partimerId','==',me.uid),where('status','in',['completed','declined'])));
+    const list=document.getElementById('histList');
+    if(snap.empty){list.innerHTML='<div style="font-size:0.78rem;color:var(--muted);font-weight:300;">No jobs yet.</div>';return;}
+    const items=[]; snap.forEach(d=>items.push({id:d.id,...d.data()}));
+    list.innerHTML=items.slice(0,5).map(j=>`
+      <div class="hi">
+        <div class="hi-left"><div class="hi-ic ${j.status==='completed'?'hi-done':'hi-miss'}">${j.status==='completed'?'✓':'✕'}</div>
+        <div><div class="hi-nm">${j.customerName||'Customer'}</div><div class="hi-lc">${j.place||'Queue job'}</div></div></div>
+        <div class="hi-pay">${j.status==='completed'?'+₹'+(meData?.rate||80):'—'}</div>
+      </div>`).join('');
+  }catch(e){console.log(e.message);}
+}
+
+function renderReqs(reqs){
+  const list=document.getElementById('reqList');
+  if(!reqs.length){list.innerHTML='<div class="empty-r"><div class="ei">📭</div><p>No requests right now. Stay available to receive new jobs!</p></div>';return;}
+  list.innerHTML=reqs.map((r,i)=>{
+    const col=COLORS[i%COLORS.length];
+    const ago=r.createdAt?timeAgo(r.createdAt.toDate()):'Just now';
+    return`<div class="req-card" id="rc${r.id}">
+      <div class="rt">
+        <div class="rc"><div class="c-av" style="background:${col}">${ini(r.customerName)}</div>
+        <div><div class="c-nm">${r.customerName||'Customer'}</div><div class="c-mt">Verified · New request</div></div></div>
+        <div class="r-time">${ago}</div>
+      </div>
+      <div class="rdet">
+        <div><div class="dl">📍 Location</div><div class="dv loc">${r.place||'—'}</div></div>
+        <div><div class="dl">⏱ Duration</div><div class="dv">${r.duration||'—'}</div></div>
+        <div><div class="dl">💰 Your pay</div><div class="dv pay">₹${meData?.rate||80}</div></div>
+        <div><div class="dl">📅 When</div><div class="dv">ASAP</div></div>
+      </div>
+      ${r.instructions?`<div class="r-note">"${r.instructions}"</div>`:''}
+      <div class="r-actions">
+        <button class="btn-dec" onclick="respond('${r.id}','declined')">Decline</button>
+        <button class="btn-acc" onclick="respond('${r.id}','accepted')">✓ Accept job</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.respond=async function(id,status){
+  try{
+    await updateDoc(doc(db,'requests',id),{status,updatedAt:serverTimestamp()});
+    if(status==='accepted'){
+      await updateDoc(doc(db,'users',me.uid),{available:false,updatedAt:serverTimestamp()});
+      document.getElementById('availTog').classList.remove('on');
+      document.getElementById('onRing').style.display='none';
+      document.getElementById('availSub').textContent='Currently on a job';
+      showToast('g','✓','Job accepted!','Head to the queue location. Customer has been notified.');
+    } else {
+      showToast('r','✕','Declined','The customer will find another part-timer.');
+    }
+    if(ringReqId===id) ringReqId=null;
+  }catch(e){showToast('r','!','Error',e.message);}
+};
+
+window.markDone=async function(){
+  if(!activeJobId) return;
+  try{
+    await updateDoc(doc(db,'requests',activeJobId),{status:'completed',completedAt:serverTimestamp()});
+    const nj=(meData?.jobsDone||0)+1, earned=meData?.rate||80;
+    meData.jobsDone=nj; meData.earnings=(meData.earnings||0)+earned;
+    await updateDoc(doc(db,'users',me.uid),{jobsDone:nj,earnings:meData.earnings,available:true,updatedAt:serverTimestamp()});
+    document.getElementById('sJobs').textContent=nj;
+    document.getElementById('availTog').classList.add('on');
+    document.getElementById('onRing').style.display='block';
+    document.getElementById('availSub').textContent='Accepting requests';
+    updateEarnings(); loadHistory();
+    showToast('g','🎉','Job completed!','₹'+earned+' earned. Well done!');
+  }catch(e){showToast('r','!','Error',e.message);}
+};
+
+window.toggleAvail=async function(){
+  const t=document.getElementById('availTog');
+  t.classList.toggle('on');
+  const on=t.classList.contains('on');
+  document.getElementById('onRing').style.display=on?'block':'none';
+  document.getElementById('availSub').textContent=on?'Accepting requests':'You are offline';
+  try{ await updateDoc(doc(db,'users',me.uid),{available:on,updatedAt:serverTimestamp()}); }catch(e){}
+  showToast(on?'g':'r',on?'●':'○',on?'You\'re online':'You\'re offline',on?'Customers can now hire you.':'You won\'t receive new requests.');
+};
+
+window.toggleLoc=function(){
+  const t=document.getElementById('locTog');
+  t.classList.toggle('on');
+  locOn=t.classList.contains('on');
+  showToast('o','📍',locOn?'Location on':'Location off',locOn?'Your live location is visible to customers.':'Location sharing paused.');
+};
+
+function startGPS(){
+  if(!navigator.geolocation) return;
+  navigator.geolocation.watchPosition(async pos=>{
+    if(!locOn||!me) return;
+    try{ await updateDoc(doc(db,'users',me.uid),{lat:pos.coords.latitude,lng:pos.coords.longitude,updatedAt:serverTimestamp()}); }catch(e){}
+  },null,{enableHighAccuracy:true,maximumAge:10000});
+}
+
+function showRing(req){
+  document.getElementById('rNm').textContent=req.customerName||'Customer';
+  document.getElementById('rLoc').textContent='📍 '+(req.place||'Queue location');
+  document.getElementById('rPay').textContent='₹'+(meData?.rate||80)+' · '+(req.duration||'');
+  document.getElementById('ringOv').classList.add('show');
+}
+window.respondRing=function(status){
+  document.getElementById('ringOv').classList.remove('show');
+  if(ringReqId){respond(ringReqId,status);ringReqId=null;}
+};
+
+function updateEarnings(){
+  const total=meData?.earnings||0, goal=500, pct=Math.min(100,Math.round(total/goal*100));
+  document.getElementById('earnV').textContent='₹'+total;
+  document.getElementById('earnS').textContent=`Goal: ₹${goal} · ${pct}% reached`;
+  setTimeout(()=>{document.getElementById('earnF').style.width=pct+'%';},300);
+}
+
+window.logout=async function(){
+  if(me) try{await updateDoc(doc(db,'users',me.uid),{available:false});}catch(e){}
+  await signOut(auth); window.location.href='login.html';
+};
+
+function timeAgo(d){
+  const s=Math.floor((Date.now()-d.getTime())/1000);
+  if(s<60)return'Just now'; if(s<3600)return Math.floor(s/60)+' min ago';
+  return Math.floor(s/3600)+' hr ago';
+}
+function showToast(type,icon,title,sub){
+  const t=document.getElementById('toast');
+  t.className=`toast ${type}`;
+  document.getElementById('tic').textContent=icon;
+  document.getElementById('tit').textContent=title;
+  document.getElementById('tsu').textContent=sub;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),4500);
+}
+</script>
+
+<!-- FOOTER — easter egg, barely visible, hover to reveal -->
+<footer class="site-footer">
+  <span class="ft-brand">© 2025 Qmate</span>
+  <span class="ft-credits">Coded by <em>Rohith</em> &nbsp;·&nbsp; Docs &amp; Ideas <em>Athul Albino</em> &amp; <em>Minha Rasheed</em></span>
+</footer>
+</body>
+</html>

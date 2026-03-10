@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qmate — Sign In</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="shortcut icon" href="favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:    #FAFAF7;
+  --bg2:   #F3F3EE;
+  --white: #FFFFFF;
+  --ink:   #111110;
+  --ink2:  #3A3A38;
+  --muted: #8C8C86;
+  --line:  #E4E4DE;
+  --accent:#FF5C35;
+  --acc2:  #FF8A6A;
+  --accbg: #FFF1EE;
+  --green: #1A9E6E;
+  --gbg:   #EDFAF4;
+  --red:   #D93025;
+  --rbg:   #FEF2F2;
+  --fh: 'Playfair Display', serif;
+  --fb: 'Figtree', sans-serif;
+  --r4: 4px; --r8: 8px; --r12: 12px; --r16: 16px; --r24: 24px;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { height:100%; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--fb);
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+}
+
+/* ─── LEFT PANEL ─────────────────────────────────────────── */
+.left {
+  background: var(--ink);
+  color: var(--bg);
+  padding: 3.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+/* Subtle grain texture overlay */
+.left::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  opacity: 0.5;
+}
+/* Coral accent orb */
+.left::after {
+  content: '';
+  position: absolute;
+  bottom: -80px; right: -80px;
+  width: 320px; height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,92,53,0.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.brand { position: relative; z-index: 1; }
+.brand-logo {
+  font-family: var(--fh);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--bg);
+  margin-bottom: 0.3rem;
+}
+.brand-logo span { color: var(--accent); }
+.brand-tag {
+  font-size: 0.8rem;
+  color: rgba(250,250,247,0.4);
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero { position: relative; z-index: 1; }
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255,92,53,0.15);
+  border: 1px solid rgba(255,92,53,0.3);
+  border-radius: 100px;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--acc2);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 1.4rem;
+}
+.pdot {
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(255,92,53,0.4); }
+  50%      { box-shadow: 0 0 0 7px transparent; }
+}
+.hero-h1 {
+  font-family: var(--fh);
+  font-size: clamp(2rem, 3.2vw, 3rem);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: var(--bg);
+  margin-bottom: 1.2rem;
+}
+.hero-h1 em { font-style: italic; color: var(--accent); }
+.hero-p {
+  font-size: 0.9rem;
+  color: rgba(250,250,247,0.55);
+  line-height: 1.75;
+  max-width: 360px;
+  margin-bottom: 2.5rem;
+  font-weight: 300;
+}
+
+.features { display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 3rem; }
+.feat {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--r12);
+  border: 1px solid rgba(255,255,255,0.07);
+  background: rgba(255,255,255,0.04);
+  transition: background 0.2s;
+}
+.feat:hover { background: rgba(255,255,255,0.07); }
+.feat-ic {
+  width: 36px; height: 36px;
+  border-radius: var(--r8);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  background: rgba(255,92,53,0.12);
+}
+.feat-text strong { font-size: 0.83rem; font-weight: 600; color: var(--bg); display: block; margin-bottom: 0.1rem; }
+.feat-text span   { font-size: 0.72rem; color: rgba(250,250,247,0.45); }
+
+.stats {
+  display: flex;
+  gap: 2.5rem;
+  position: relative; z-index: 1;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.stat strong {
+  font-family: var(--fh);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--bg);
+  display: block;
+  letter-spacing: -0.02em;
+}
+.stat span { font-size: 0.72rem; color: rgba(250,250,247,0.4); font-weight: 300; letter-spacing: 0.04em; }
+
+/* ─── RIGHT PANEL ────────────────────────────────────────── */
+.right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2.5rem;
+  background: var(--bg);
+}
+.auth-wrap {
+  width: 100%;
+  max-width: 400px;
+  animation: fadeUp 0.5s ease both;
+}
+@keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+
+/* ROLE TOGGLE */
+.role-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 1.5rem;
+}
+.role-opt {
+  border-radius: var(--r12);
+  border: 1.5px solid var(--line);
+  background: var(--white);
+  padding: 0.9rem 0.8rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.22s;
+  user-select: none;
+}
+.role-opt:hover { border-color: var(--accent); }
+.role-opt .ri { font-size: 1.5rem; margin-bottom: 0.3rem; }
+.role-opt .rn { font-family: var(--fb); font-size: 0.83rem; font-weight: 600; color: var(--ink2); }
+.role-opt .rd { font-size: 0.67rem; color: var(--muted); margin-top: 0.1rem; }
+.role-opt.sel {
+  border-color: var(--accent);
+  background: var(--accbg);
+  box-shadow: 0 0 0 3px rgba(255,92,53,0.08);
+}
+.role-opt.sel .rn { color: var(--accent); }
+
+/* TABS */
+.tabs {
+  display: flex;
+  background: var(--bg2);
+  border-radius: var(--r8);
+  padding: 3px;
+  gap: 3px;
+  margin-bottom: 1.4rem;
+}
+.tab {
+  flex:1; text-align:center; padding:0.48rem;
+  border-radius: 6px;
+  font-size: 0.82rem; font-weight: 500;
+  cursor: pointer; transition: all 0.2s;
+  color: var(--muted);
+}
+.tab.on { background: var(--white); color: var(--ink); font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+
+/* CARD */
+.card {
+  background: var(--white);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r16);
+  padding: 1.7rem;
+}
+.c-title { font-family: var(--fh); font-size: 1.2rem; font-weight: 700; margin-bottom: 0.25rem; color: var(--ink); }
+.c-sub   { font-size: 0.8rem; color: var(--muted); margin-bottom: 1.4rem; font-weight: 300; }
+
+/* FORM */
+.fg { margin-bottom: 0.95rem; }
+.fl { display:block; font-size:0.68rem; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted); margin-bottom:0.38rem; }
+.fi {
+  width: 100%;
+  background: var(--bg);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r8);
+  padding: 0.7rem 0.95rem;
+  color: var(--ink);
+  font-family: var(--fb);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.fi:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255,92,53,0.1); }
+.fi::placeholder { color: var(--muted); font-weight: 300; }
+select.fi option { background: var(--white); }
+
+/* BUTTONS */
+.btn-main {
+  width:100%; padding: 0.82rem;
+  border-radius: var(--r8); border: none;
+  font-family: var(--fb); font-size: 0.9rem; font-weight: 600;
+  cursor: pointer; transition: all 0.22s;
+  margin-bottom: 0.85rem;
+  display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+  letter-spacing: 0.01em;
+}
+.btn-accent { background: var(--accent); color: #fff; }
+.btn-accent:hover { background: #e84e2a; box-shadow: 0 4px 16px rgba(255,92,53,0.28); transform: translateY(-1px); }
+.btn-google {
+  width:100%; padding: 0.72rem;
+  border-radius: var(--r8);
+  background: var(--white); border: 1.5px solid var(--line);
+  color: var(--ink2); font-family: var(--fb); font-size: 0.87rem; font-weight: 500;
+  cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+}
+.btn-google:hover { border-color: var(--ink2); background: var(--bg); }
+
+.divider {
+  text-align: center; color: var(--muted); font-size: 0.72rem;
+  margin: 0.85rem 0; position: relative;
+}
+.divider::before,.divider::after {
+  content:''; position:absolute; top:50%; width:43%; height:1px; background: var(--line);
+}
+.divider::before { left:0; } .divider::after { right:0; }
+
+/* MSGS */
+.err { background:var(--rbg); border:1px solid rgba(217,48,37,0.25); border-radius:var(--r8); padding:0.65rem 0.9rem; font-size:0.8rem; color:var(--red); margin-bottom:0.9rem; display:none; }
+.err.on { display:block; }
+.suc { background:var(--gbg); border:1px solid rgba(26,158,110,0.25); border-radius:var(--r8); padding:0.65rem 0.9rem; font-size:0.8rem; color:var(--green); margin-bottom:0.9rem; display:none; }
+.suc.on { display:block; }
+
+.spin { width:15px;height:15px;border:2px solid rgba(255,255,255,0.35);border-top-color:#fff;border-radius:50%;animation:sp 0.7s linear infinite;display:none; }
+@keyframes sp { to { transform:rotate(360deg); } }
+.spin.on { display:inline-block; }
+
+.reg-only { display:none; }
+.reg-only.on { display:block; }
+
+@media(max-width:800px) { body { grid-template-columns:1fr; } .left { display:none; } }
+
+/* ── SITE FOOTER ── easter egg: invisible until hovered ─────── */
+.site-footer{width:100%;padding:.95rem 2rem;background:var(--bg);border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;}
+.ft-brand{font-family:var(--fh);font-size:.75rem;font-weight:500;color:var(--line);letter-spacing:.02em;transition:color .4s;}
+.ft-credits{font-size:.67rem;color:var(--line);font-weight:300;letter-spacing:.03em;text-align:right;transition:color .4s;}
+.ft-credits em{font-style:normal;color:var(--bg2);transition:color .4s;}
+.site-footer:hover .ft-brand,.site-footer:hover .ft-credits{color:var(--muted);}
+.site-footer:hover .ft-credits em{color:var(--ink2);}
+@media(max-width:480px){.site-footer{flex-direction:column;align-items:flex-start;padding:.85rem 1.1rem;}.ft-credits{text-align:left;}}
+
+/* ── RESPONSIVE LOGIN ───────────────────────────────────────── */
+@media(max-width:860px){
+  body{grid-template-columns:1fr;}
+  .left{display:none;}
+  .right{padding:2rem 1.2rem;justify-content:flex-start;padding-top:3rem;}
+}
+@media(max-width:420px){
+  .right{padding:1.5rem 1rem;}
+  .card{padding:1.2rem 1rem;}
+  .role-row{gap:6px;}
+}
+
+</style>
+</head>
+<body>
+
+<!-- LEFT -->
+<div class="left">
+  <div class="brand">
+    <div class="brand-logo">Q<span>.</span>mate</div>
+    <div class="brand-tag">Queue Management</div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-eyebrow"><span class="pdot"></span> 47 Part-timers Active Now</div>
+    <h1 class="hero-h1">Never stand<br>in a queue<br><em>again.</em></h1>
+    <p class="hero-p">Hire verified people near you to hold your spot in any bank, hospital, or government office queue — while you stay home.</p>
+    <div class="features">
+      <div class="feat"><div class="feat-ic">📍</div><div class="feat-text"><strong>Live GPS Tracking</strong><span>Watch your stand-in's real-time location</span></div></div>
+      <div class="feat"><div class="feat-ic">⚡</div><div class="feat-text"><strong>Instant Requests</strong><span>Hire in seconds, confirmed in minutes</span></div></div>
+      <div class="feat"><div class="feat-ic">🤖</div><div class="feat-text"><strong>AI Support</strong><span>24/7 smart assistant, instant answers</span></div></div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><strong>2,400+</strong><span>Jobs Completed</span></div>
+    <div class="stat"><strong>4.9 ★</strong><span>Avg. Rating</span></div>
+    <div class="stat"><strong>Kerala</strong><span>Serving Now</span></div>
+  </div>
+</div>
+
+<!-- RIGHT -->
+<div class="right">
+  <div class="auth-wrap">
+
+    <div class="role-row">
+      <div class="role-opt sel" id="roleC" onclick="setRole('customer')">
+        <div class="ri">🛒</div>
+        <div class="rn">Customer</div>
+        <div class="rd">Hire a stand-in</div>
+      </div>
+      <div class="role-opt" id="roleP" onclick="setRole('partimer')">
+        <div class="ri">⚡</div>
+        <div class="rn">Part-timer</div>
+        <div class="rd">Earn by standing</div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab on" id="tabL" onclick="setTab('login')">Sign In</div>
+      <div class="tab" id="tabR" onclick="setTab('register')">Register</div>
+    </div>
+
+    <div class="card">
+      <div class="c-title" id="cTitle">Welcome back</div>
+      <div class="c-sub" id="cSub">Sign in to your customer account</div>
+
+      <div class="err" id="errEl"></div>
+      <div class="suc" id="sucEl"></div>
+
+      <div class="fg reg-only" id="rfName"><label class="fl">Full Name</label><input class="fi" type="text" id="inName" placeholder="Your full name"></div>
+      <div class="fg reg-only" id="rfRate" style="display:none;"><label class="fl">Hourly Rate (₹)</label><input class="fi" type="number" id="inRate" placeholder="e.g. 80" min="30"></div>
+      <div class="fg reg-only" id="rfSpec" style="display:none;"><label class="fl">Specialty</label>
+        <select class="fi" id="inSpec">
+          <option value="">Choose specialty</option>
+          <option>Bank Queues</option><option>Government Offices</option>
+          <option>Hospitals</option><option>Railways / Bus Stand</option>
+          <option>RTO / Passport Office</option><option>All Queue Types</option>
+        </select>
+      </div>
+
+      <div class="fg"><label class="fl">Email Address</label><input class="fi" type="email" id="inEmail" placeholder="you@example.com"></div>
+      <div class="fg"><label class="fl">Password</label><input class="fi" type="password" id="inPass" placeholder="Min. 6 characters"></div>
+      <div class="fg reg-only" id="rfConfirm"><label class="fl">Confirm Password</label><input class="fi" type="password" id="inConfirm" placeholder="Re-enter password"></div>
+
+      <button class="btn-main btn-accent" id="btnMain" onclick="handleAuth()">
+        <span class="spin" id="sp"></span>
+        <span id="btnTxt">Sign In</span>
+      </button>
+      <div class="divider">or</div>
+      <button class="btn-google" onclick="googleAuth()">
+        <svg width="17" height="17" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.7 2.3 30.2 0 24 0 14.6 0 6.6 5.5 2.6 13.5l7.8 6.1C12.3 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.4 5.7c4.3-4 6.8-9.9 6.8-16.9z"/><path fill="#FBBC05" d="M10.4 28.4c-.6-1.6-.9-3.3-.9-5.1s.3-3.5.9-5.1l-7.8-6.1C.9 15.1 0 19.4 0 24s.9 8.9 2.6 12.9l7.8-6.1z"/><path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.5l-7.4-5.7c-2 1.4-4.7 2.2-7.8 2.2-6.3 0-11.6-4.1-13.6-9.7l-7.8 6.1C6.6 42.5 14.6 48 24 48z"/></svg>
+        Continue with Google
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script type="module">
+
+  // ═══════════════════════════════════════════════════════════════
+  //  PASTE YOUR FIREBASE CONFIG HERE
+  //  Get it from: Firebase Console → Project Settings → Your Apps
+  //  Just replace everything inside the curly braces { } below
+  // ═══════════════════════════════════════════════════════════════
+  const firebaseConfig = {
+    apiKey:            "AIzaSyBxsq0jHQTH1NLiq4MAQTpFNVmApFV7CDA",
+    authDomain:        "qmateapp1.firebaseapp.com",
+    projectId:         "qmateapp1",
+    storageBucket:     "qmateapp1.firebasestorage.app",
+    messagingSenderId: "570175715270",
+    appId:             "1:570175715270:web:1699237f00357f32b1a4c7"
+  };
+  // ═══════════════════════════════════════════════════════════════
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+let role = 'customer', tab = 'login';
+
+onAuthStateChanged(auth, async u => {
+  if (!u) return;
+  const snap = await getDoc(doc(db,'users',u.uid));
+  if (snap.exists()) redirect(snap.data().role);
+});
+
+window.setRole = function(r) {
+  role = r;
+  document.getElementById('roleC').className = 'role-opt' + (r==='customer' ? ' sel' : '');
+  document.getElementById('roleP').className = 'role-opt' + (r==='partimer' ? ' sel' : '');
+  document.getElementById('rfRate').style.display = r==='partimer' && tab==='register' ? 'block':'none';
+  document.getElementById('rfSpec').style.display = r==='partimer' && tab==='register' ? 'block':'none';
+  updateTitles();
+};
+
+window.setTab = function(t) {
+  tab = t;
+  document.getElementById('tabL').className = 'tab' + (t==='login' ? ' on':'');
+  document.getElementById('tabR').className = 'tab' + (t==='register' ? ' on':'');
+  document.querySelectorAll('.reg-only').forEach(el => el.classList.toggle('on', t==='register'));
+  document.getElementById('rfRate').style.display = role==='partimer' && t==='register' ? 'block':'none';
+  document.getElementById('rfSpec').style.display = role==='partimer' && t==='register' ? 'block':'none';
+  updateTitles(); clearMsgs();
+};
+
+function updateTitles() {
+  const map = {
+    customer_login:    ['Welcome back','Sign in to your customer account'],
+    customer_register: ['Create account','Join Qmate as a customer'],
+    partimer_login:    ['Part-timer portal','Sign in to accept queue jobs'],
+    partimer_register: ['Join as part-timer','Register and start earning today'],
+  };
+  const [t,s] = map[`${role}_${tab}`];
+  document.getElementById('cTitle').textContent = t;
+  document.getElementById('cSub').textContent   = s;
+  document.getElementById('btnTxt').textContent = tab==='login' ? 'Sign In' : 'Create Account';
+}
+
+window.handleAuth = async function() {
+  const email = document.getElementById('inEmail').value.trim();
+  const pass  = document.getElementById('inPass').value;
+  clearMsgs(); setSpin(true);
+  try {
+    if (tab === 'login') {
+      const c = await signInWithEmailAndPassword(auth, email, pass);
+      await redirect2(c.user);
+    } else {
+      const name = document.getElementById('inName').value.trim();
+      const conf = document.getElementById('inConfirm').value;
+      if (!name)          throw new Error('Please enter your full name.');
+      if (pass.length<6)  throw new Error('Password must be at least 6 characters.');
+      if (pass !== conf)  throw new Error('Passwords do not match.');
+      const c = await createUserWithEmailAndPassword(auth, email, pass);
+      await updateProfile(c.user, { displayName: name });
+      await saveProfile(c.user);
+      redirect(role);
+    }
+  } catch(e) { showErr(friendly(e.message)); setSpin(false); }
+};
+
+window.googleAuth = async function() {
+  clearMsgs(); setSpin(true);
+  try {
+    const r = await signInWithPopup(auth, new GoogleAuthProvider());
+    const snap = await getDoc(doc(db,'users',r.user.uid));
+    if (!snap.exists()) await saveProfile(r.user);
+    await redirect2(r.user);
+  } catch(e) { showErr(friendly(e.message)); setSpin(false); }
+};
+
+async function saveProfile(u) {
+  const name = document.getElementById('inName')?.value.trim() || u.displayName || 'User';
+  const d = { uid:u.uid, name, email:u.email||'', role, createdAt:serverTimestamp(), updatedAt:serverTimestamp() };
+  if (role==='partimer') {
+    d.rate = parseInt(document.getElementById('inRate').value)||80;
+    d.specialty = document.getElementById('inSpec').value||'All Queue Types';
+    d.available=false; d.rating=5.0; d.jobsDone=0; d.earnings=0; d.lat=null; d.lng=null;
+  }
+  await setDoc(doc(db,'users',u.uid), d, { merge:true });
+}
+
+async function redirect2(u) {
+  const snap = await getDoc(doc(db,'users',u.uid));
+  redirect(snap.exists() ? snap.data().role : role);
+}
+function redirect(r) { window.location.href = r==='partimer' ? 'partimer.html' : 'customer.html'; }
+function friendly(m) {
+  if (m.includes('email-already-in-use')) return 'This email is already registered. Try signing in.';
+  if (m.includes('wrong-password'))       return 'Incorrect password. Please try again.';
+  if (m.includes('user-not-found'))       return 'No account found with this email.';
+  if (m.includes('invalid-email'))        return 'Please enter a valid email address.';
+  if (m.includes('popup-closed'))         return 'Google sign-in was cancelled.';
+  return m;
+}
+function showErr(m) { const e=document.getElementById('errEl'); e.textContent=m; e.classList.add('on'); }
+function clearMsgs() { document.getElementById('errEl').classList.remove('on'); document.getElementById('sucEl').classList.remove('on'); }
+function setSpin(on) { document.getElementById('sp').classList.toggle('on',on); }
+document.addEventListener('keydown', e => { if(e.key==='Enter') handleAuth(); });
+</script>
+
+<!-- FOOTER — easter egg, barely visible, hover to reveal -->
+<footer class="site-footer">
+  <span class="ft-brand">© 2025 Qmate</span>
+  <span class="ft-credits">Coded by <em>Rohith</em> &nbsp;·&nbsp; Docs &amp; Ideas <em>Athul Albino</em> &amp; <em>Minha Rasheed</em></span>
+</footer>
+</body>
+</html>
